@@ -1,0 +1,22 @@
+.bagel-listing {
+    max-width: 250px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 2px hsl(0, 0%, 80%);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bagel-listing i {
+    cursor: pointer;
+}
+.bagel-listing i+i {
+    margin-left: 0.5rem;
+}
+.fa-times-circle {
+    color: hsl(0, 50%, 40%);
+}
+.fa-pencil {
+    color: hsl(240, 50%, 40%);
+}

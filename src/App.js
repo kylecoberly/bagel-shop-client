@@ -3,6 +3,7 @@ import './App.css';
 
 import BagelList from "./BagelList"
 import AddNewBagel from "./AddNewBagel"
+import FilterBox from "./FilterBox"
 
 const BASE_URL = "https://bagel-api-fis.herokuapp.com"
 
@@ -10,6 +11,19 @@ class App extends Component {
     state = {
         bagels: [],
         isAddNewBagelShowing: false,
+        searchTerm: "",
+    }
+    filteredBagels = () => this.state.bagels
+        .filter(bagel => bagel.type && bagel.rating)
+        .filter(bagel => {
+            return bagel.type
+                .toLowerCase()
+                .includes(this.state.searchTerm.toLowerCase())
+        })
+    updateSearchTerm = event => {
+        this.setState({
+            searchTerm: event.target.value,
+        })
     }
     componentDidMount(){
         const url = `${BASE_URL}/bagels`
@@ -18,6 +32,19 @@ class App extends Component {
             .then(bagels => {
                 this.setState({ bagels })
             })
+    }
+    deleteBagel = id => {
+        fetch(`${BASE_URL}/bagels/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then(() => {
+            this.setState({
+                bagels: this.state.bagels.filter(bagel => bagel.id !== id)
+            })
+        })
+
     }
     postBagel = bagel => {
         fetch(`${BASE_URL}/bagels`, {
@@ -46,9 +73,16 @@ class App extends Component {
                     <h1>Bagel Shop</h1>
                 </header>
                 <main>
+                    <FilterBox
+                        searchTerm={this.state.searchTerm}
+                        updateSearchTerm={this.updateSearchTerm}
+                    />
                     <section>
                         <h2>Bagels</h2>
-                        <BagelList bagels={this.state.bagels} />
+                        <BagelList
+                            bagels={this.filteredBagels()}
+                            deleteBagel={this.deleteBagel}
+                        />
                     </section>
                     <button onClick={this.toggleAddNewBagel}>
                         {
