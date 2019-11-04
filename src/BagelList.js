@@ -17,7 +17,7 @@ export default function BagelList(props){
     })
 
     return (
-        <ul>{$bagels}</ul>
+        <ul className="bagel-list">{$bagels}</ul>
     )
 }
 

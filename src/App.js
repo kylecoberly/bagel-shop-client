@@ -16,13 +16,33 @@ class App extends Component {
     filteredBagels = () => this.state.bagels
         .filter(bagel => bagel.type && bagel.rating)
         .filter(bagel => {
-            return bagel.type
+            return (bagel.type
                 .toLowerCase()
                 .includes(this.state.searchTerm.toLowerCase())
+            ) || (bagel.rating
+                .toString()
+                .includes(this.state.searchTerm.toLowerCase())
+            )
         })
     updateSearchTerm = event => {
         this.setState({
             searchTerm: event.target.value,
+        })
+    }
+    editBagel = (id, bagel) => {
+        fetch(`${BASE_URL}/bagels/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bagel)
+        }).then(() => {
+            this.setState({
+                bagels: [
+                    ...this.state.bagels.filter(bagel => bagel.id !== id),
+                    bagel
+                ]
+            })
         })
     }
     componentDidMount(){
@@ -82,18 +102,23 @@ class App extends Component {
                         <BagelList
                             bagels={this.filteredBagels()}
                             deleteBagel={this.deleteBagel}
+                            editBagel={this.editBagel}
                         />
                     </section>
-                    <button onClick={this.toggleAddNewBagel}>
-                        {
-                            this.state.isAddNewBagelShowing
-                                ? "-"
-                                : "+"
-                        }
-                    </button>
+                    <div className="button-wrapper">
+                        <button className="add-button" onClick={this.toggleAddNewBagel}>
+                            <span>
+                                {
+                                    this.state.isAddNewBagelShowing
+                                        ? "-"
+                                        : "+"
+                                }
+                            </span>
+                        </button>
+                    </div>
                     {
                         this.state.isAddNewBagelShowing
-                            ? <AddNewBagel addBagel={this.addBagel} />
+                            ? <AddNewBagel addBagel={this.postBagel} />
                             : null
                     }
                 </main>

@@ -1,0 +1,11 @@
+.bagel-form {
+    width: 300px;
+}
+.bagel-form input {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+
